@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
 #
-#  testnothing.py: empty unit-testing class
+#  TestNothing.py: empty unit-testing class
 #  
 #  Copyright 2018 Peter Brown <peter.brown@converse.edu>
 #  
