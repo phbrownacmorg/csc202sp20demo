@@ -1,6 +1,7 @@
 # Do nothing, successfully
 # Peter Brown, 2020-01-07
 
+
 from typing import List
 
 def main(args:List[str]) -> int:
