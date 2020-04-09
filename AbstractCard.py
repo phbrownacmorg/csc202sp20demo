@@ -73,6 +73,6 @@ class AbstractCard(metaclass=ABCMeta):
          
     @staticmethod
     @abstractmethod
-    def makeDeck(): # type () -> List[AbstractCard]:
+    def makeDeck() -> List['AbstractCard']:
         deck:List[AbstractCard] = []
         return deck
