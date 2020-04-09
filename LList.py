@@ -118,7 +118,9 @@ class LList(object):
             # The effect is to link around the next node.
             self._data = nextNode._data
             self._next = nextNode._next
-        else: # pos > 1, so we pop position POS - 1 from the rest of the list
+        else: # pos > 0, so we count down pos until pos == 0
+            # Popping position POS from here is the same as popping position
+            #    POS - 1 from the rest of the list
             # (We already know there *is* more list, so the cast will work.)
             result = cast(LList, self._next).pop(pos - 1)
             
