@@ -76,6 +76,14 @@ class LList(object):
             # Otherwise, ask the rest of the list
             # (We already know there *is* more list, so the cast will work.)
             return cast(LList, self._next).search(value)
+
+    def __str__(self) -> str:
+        """Returns a tring representation of the list."""
+        if self.isEmpty(): # Show the sentinel node
+            return "\u2205" #\u22a3, 252b
+        else: # Show this node, and concatenate on the rest of the list
+            # 27f6, 27f9
+            return "\u276c{}\u276d\u279e".format(self._data) + str(cast(LList, self._next))
         
     # Mutator methods
     

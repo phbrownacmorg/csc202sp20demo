@@ -43,7 +43,14 @@ class TestNothing(unittest.TestCase):
         
     def testEmptyFalse(self) -> None:
         self.assertFalse(self._list1.isEmpty())
-             
+
+    def testStr(self) -> None:
+        print(self._list1)
+        print(self._list2)
+        self.assertEqual(str(self._list1), "\u276cfoo\u276d\u279e\u2205")
+        self.assertEqual(str(self._list2),
+                         "\u276cbar\u276d\u279e\u276cfoo\u276d\u279e\u2205")
+        
     def testSize(self) -> None:
         self.assertEqual((LList()).size(), 0)
         self.assertEqual(self._list1.size(), 1)
