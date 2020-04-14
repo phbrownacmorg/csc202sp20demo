@@ -55,8 +55,8 @@ class TestNothing(unittest.TestCase):
         self.assertFalse(self._list1.isEmpty())
 
     def testStr(self) -> None:
-        #print('\ntestStr, self._list1:', self._list1)
-        #print('testStr, self._list2:', self._list2)
+        # print('\ntestStr, self._list1:', self._list1)
+        # print('testStr, self._list2:', self._list2)
         self.assertEqual(str(self._list1), "\u276cfoo\u276d\u279e\u2205")    # "❬foo❭➞∅"
         self.assertEqual(str(self._list2),
                          "\u276cbar\u276d\u279e\u276cfoo\u276d\u279e\u2205") # "❬bar❭➞❬foo❭➞∅"
@@ -96,7 +96,7 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.size(), 1)
 
     def testPopPosL2(self) -> None:
-        self.assertEqual(self._list2.pop(0), 'bar')
+        self.assertEqual(self._list2.pop(0), 'bar')  # ❬bar❭➞❬foo❭➞∅ -> ❬foo❭➞∅
         self.assertEqual(self._list2.size(), 1)
 
     def testPopPos1L2(self) -> None:
@@ -118,21 +118,21 @@ class TestNothing(unittest.TestCase):
         list3 = self._list2.shallowCopy()
         self.assertEqual(list3.size(), self._list2.size())
         self.assertEqual(list3._data, 'bar')
-        self.assertTrue(list3 is self._list2) # Aliasing galore!
+        self.assertTrue(list3 is self._list2)        # Aliasing galore!
 
         # Change to self._list2 also changes list3
         self.assertEqual(self._list2.pop(), 'foo')   # self._list2: ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
         self.assertEqual(list3.size(), 1)            # list3 got shorter as well!
-        #print('\ntestShallowCopy, self._list2:', self._list2)
-        #print('testShallowCopy, list3:', list3)
+        # print('\ntestShallowCopy, self._list2:', self._list2)
+        # print('testShallowCopy, list3:', list3)
         
         # Change to list3 affects self._list2 as well
         list3.add('baz')                             # list3: ❬baz❭➞❬bar❭➞∅
         self.assertEqual(list3.size(), 2)
         self.assertEqual(self._list2.size(), 2)      # self._list2 got longer as well!
-        #print('\ntestShallowCopy, self._list2:', self._list2) 
-        #print('testShallowCopy, list3:', list3)
+        # print('\ntestShallowCopy, self._list2:', self._list2) 
+        # print('testShallowCopy, list3:', list3)
 
     def testDeepCopy(self) -> None:
         list3:LList = self._list2.deepCopy()
@@ -143,15 +143,15 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.pop(), 'foo')     # self._list2: ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
         self.assertEqual(list3.size(), 2)              # list3 is unaffected
-        #print('\ntestDeepCopy, self._list2:', self._list2)
-        #print('testDeepCopy, list3:', list3) 
+        # print('\ntestDeepCopy, self._list2:', self._list2)
+        # print('testDeepCopy, list3:', list3) 
        
         # Change to list3 stays on list3.  self._list2 is unaffected.
         list3.add('baz')                               # list3: ❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬bar❭➞❬foo❭➞∅
         self.assertEqual(list3.size(), 3)
         self.assertEqual(self._list2.size(), 1)        # Adding didn't change self._list2
-        #print('\ntestDeepCopy, self._list2:', self._list2)
-        #print('testDeepCopy, list3:', list3)
+        # print('\ntestDeepCopy, self._list2:', self._list2)
+        # print('testDeepCopy, list3:', list3)
     
         
 if __name__ == '__main__':

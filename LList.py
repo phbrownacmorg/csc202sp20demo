@@ -78,12 +78,18 @@ class LList(object):
             return cast(LList, self._next).search(value)
 
     def __str__(self) -> str:
-        """Returns a tring representation of the list."""
+        """Returns a string representation of the list.  This is very loosely
+        based on the box diagram.  Contents of a node are shown within
+        ❬❭, with a ➞ to the next node.  The empty list (sentinel node)
+        is represented by ∅.  So a list containing the strings "Huey",
+        "Dewey", and "Louie", in that order, would be represented by
+        the string "❬Huey❭➞❬Dewey❭➞❬Louie❭➞∅"."""
         if self.isEmpty(): # Show the sentinel node
-            return "\u2205" #\u22a3, 252b
+            return "\u2205" # "∅"
         else: # Show this node, and concatenate on the rest of the list
-            # 27f6, 27f9
-            return "\u276c{}\u276d\u279e".format(self._data) + str(cast(LList, self._next))
+            # 
+            return "\u276c{}\u276d\u279e".format(self._data) + \
+                str(cast(LList, self._next))
         
     def shallowCopy(self) -> 'LList':
         """Returns a shallow copy of the list, only copying pointers."""
