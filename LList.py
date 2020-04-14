@@ -93,7 +93,8 @@ class LList(object):
         """Returns a deep(er) copy of the list, copying data."""
         newList:LList = LList() # if self is empty, this is the right value
         if not self.isEmpty():
-            newList = self._next.deepCopy()
+            # Cast is safe because we already know self._next != None
+            newList = cast(LList, self._next).deepCopy()
             newList.add(self._data)
         return newList
 

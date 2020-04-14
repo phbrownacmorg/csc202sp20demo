@@ -29,13 +29,23 @@ class TestNothing(unittest.TestCase):
 
     def setUp(self) -> None:
         """Run before every test."""
-        self._list1 = LList()
-        self._list1.add("foo")
+        self._empty:LList = LList()     # ∅
         
-        self._list2 = LList()
+        self._list1:LList = LList()
+        self._list1.add("foo")          # ❬foo❭➞∅
+        
+        self._list2:LList = LList()
         self._list2._next = self._list1
-        self._list2._data = 'bar'
+        self._list2._data = 'bar'       # ❬bar❭➞❬foo❭➞∅
+
+        self._list3:LList = LList()
+        self._list3._next = self._list2
+        self._list3._data = 'baz'       # ❬baz❭➞❬bar❭➞❬foo❭➞∅
         
+        self._list4:LList = LList()
+        self._list4._next = self._list3
+        self._list4._data = 'four'      # ❬four❭➞❬baz❭➞❬bar❭➞❬foo❭➞∅
+
     # Every function in this class whose name begins with 'test'
     # will be executed when the code is run
     def test_nothing(self) -> None:
@@ -45,11 +55,11 @@ class TestNothing(unittest.TestCase):
         self.assertFalse(self._list1.isEmpty())
 
     def testStr(self) -> None:
-        print('\ntestStr, self._list1:', self._list1)
-        print('testStr, self._list2:', self._list2)
-        self.assertEqual(str(self._list1), "\u276cfoo\u276d\u279e\u2205")
+        #print('\ntestStr, self._list1:', self._list1)
+        #print('testStr, self._list2:', self._list2)
+        self.assertEqual(str(self._list1), "\u276cfoo\u276d\u279e\u2205")    # "❬foo❭➞∅"
         self.assertEqual(str(self._list2),
-                         "\u276cbar\u276d\u279e\u276cfoo\u276d\u279e\u2205")
+                         "\u276cbar\u276d\u279e\u276cfoo\u276d\u279e\u2205") # "❬bar❭➞❬foo❭➞∅"
         
     def testSize(self) -> None:
         self.assertEqual((LList()).size(), 0)
@@ -57,32 +67,32 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.size(), 2)
         
     def testSearch(self) -> None:
-        self.assertFalse((LList()).search('happiness'))
-        self.assertFalse(self._list1.search('meaning'))
-        self.assertFalse(self._list2.search('Spock'))
-        self.assertTrue(self._list1.search('foo'))
-        self.assertTrue(self._list2.search('bar'))
-        self.assertTrue(self._list2.search('foo'))
+        self.assertFalse((LList()).search('happiness')) # 'happiness' ∉ ∅
+        self.assertFalse(self._list1.search('meaning')) # 'meaning' ∉ ❬foo❭➞∅ 
+        self.assertFalse(self._list2.search('Spock'))   # 'Spock' ∉ ❬bar❭➞❬foo❭➞∅
+        self.assertTrue(self._list1.search('foo'))      # 'foo' ∈ ❬foo❭➞∅
+        self.assertTrue(self._list2.search('bar'))      # 'bar' ∈ ❬bar❭➞❬foo❭➞∅
+        self.assertTrue(self._list2.search('foo'))      # 'foo' ∈ ❬bar❭➞❬foo❭➞∅
         
     def testAdd(self) -> None:
         # Already did adding in setUp
         self.assertTrue(self._list2._invariant())
         self.assertTrue(self._list1._invariant())
         self.assertEqual(self._list2.size(), 2)
-        self._list2.add('baz')
+        self._list2.add('baz')                       # ❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬bar❭➞❬foo❭➞∅
         self.assertEqual(self._list2.size(), 3)
         self.assertTrue(self._list2._invariant())
         
     def testPop1L1(self) -> None:
-        self.assertEqual(self._list1.pop(), 'foo')
+        self.assertEqual(self._list1.pop(), 'foo')   # ❬foo❭➞∅ -> ∅
         self.assertTrue(self._list1.isEmpty())
         
     def testPop2L2(self) -> None:
-        self.assertEqual(self._list2.pop(), 'foo')
+        self.assertEqual(self._list2.pop(), 'foo')   # ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
     
     def testPopNegL2(self) -> None:
-        self.assertEqual(self._list2.pop(-2), 'bar')
+        self.assertEqual(self._list2.pop(-2), 'bar') # ❬bar❭➞❬foo❭➞∅ -> ❬foo❭➞∅
         self.assertEqual(self._list2.size(), 1)
 
     def testPopPosL2(self) -> None:
@@ -90,18 +100,18 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.size(), 1)
 
     def testPopPos1L2(self) -> None:
-        self.assertEqual(self._list2.pop(1), 'foo')
+        self.assertEqual(self._list2.pop(1), 'foo')  # ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
-        self.assertEqual(self._list2.pop(0), 'bar')
+        self.assertEqual(self._list2.pop(0), 'bar')  # ❬foo❭➞∅ -> ∅
         self.assertEqual(self._list2.size(), 0)
 
     def testPop1L3(self) -> None:
-        self._list2.add('baz')
-        self.assertEqual(self._list2.pop(1), 'bar')
+        self._list2.add('baz')                       # ❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬bar❭➞❬foo❭➞∅
+        self.assertEqual(self._list2.pop(1), 'bar')  # ❬baz❭➞❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬foo❭➞∅
         self.assertEqual(self._list2.size(), 2)
-        self.assertEqual(self._list2.pop(), 'foo')
+        self.assertEqual(self._list2.pop(), 'foo')   # ❬baz❭➞❬foo❭➞∅ -> ❬baz❭➞∅
         self.assertEqual(self._list2.size(), 1)
-        self.assertEqual(self._list2.pop(), 'baz')
+        self.assertEqual(self._list2.pop(), 'baz')   # ❬baz❭➞∅ -> ∅
         self.assertEqual(self._list2.size(), 0)
 
     def testShallowCopy(self) -> None:
@@ -111,39 +121,37 @@ class TestNothing(unittest.TestCase):
         self.assertTrue(list3 is self._list2) # Aliasing galore!
 
         # Change to self._list2 also changes list3
-        self.assertEqual(self._list2.pop(), 'foo') # Pop 'foo' off the end of self._list2
+        self.assertEqual(self._list2.pop(), 'foo')   # self._list2: ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
-        self.assertEqual(list3.size(), 1)
-        print('\ntestShallowCopy, self._list2:', self._list2)
-        print('testShallowCopy, list3:', list3) # list3 got shorter as well!
+        self.assertEqual(list3.size(), 1)            # list3 got shorter as well!
+        #print('\ntestShallowCopy, self._list2:', self._list2)
+        #print('testShallowCopy, list3:', list3)
         
         # Change to list3 affects self._list2 as well
-        list3.add('baz') # Add 'baz' to the head of list3
+        list3.add('baz')                             # list3: ❬baz❭➞❬bar❭➞∅
         self.assertEqual(list3.size(), 2)
-        self.assertEqual(self._list2.size(), 2)
-        print('\ntestShallowCopy, self._list2:', self._list2) # self._list2 got longer as well!
-        print('testShallowCopy, list3:', list3)
-
+        self.assertEqual(self._list2.size(), 2)      # self._list2 got longer as well!
+        #print('\ntestShallowCopy, self._list2:', self._list2) 
+        #print('testShallowCopy, list3:', list3)
 
     def testDeepCopy(self) -> None:
-        list3 = self._list2.deepCopy()
-        self.assertEqual(str(list3), str(self._list2))
-        self.assertFalse(list3 is self._list2) # No aliasing
+        list3:LList = self._list2.deepCopy()
+        self.assertEqual(str(list3), str(self._list2)) # Lists look the same
+        self.assertFalse(list3 is self._list2)         # No aliasing
 
         # Change to self._list2 stays on self._list2.  list3 is unaffected.
-        self.assertEqual(self._list2.pop(), 'foo') # Pop 'foo' off the end of self._list2
+        self.assertEqual(self._list2.pop(), 'foo')     # self._list2: ❬bar❭➞❬foo❭➞∅ -> ❬bar❭➞∅
         self.assertEqual(self._list2.size(), 1)
-        self.assertEqual(list3.size(), 2)
-        print('\ntestDeepCopy, self._list2:', self._list2)
-        print('testDeepCopy, list3:', list3) # list3 is unaffected
+        self.assertEqual(list3.size(), 2)              # list3 is unaffected
+        #print('\ntestDeepCopy, self._list2:', self._list2)
+        #print('testDeepCopy, list3:', list3) 
        
         # Change to list3 stays on list3.  self._list2 is unaffected.
-        list3.add('baz') # Add 'baz' to the head of list3
+        list3.add('baz')                               # list3: ❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬bar❭➞❬foo❭➞∅
         self.assertEqual(list3.size(), 3)
-        self.assertEqual(self._list2.size(), 1)
-        print('\ntestDeepCopy, self._list2:', self._list2) # self._list2 is unaffected.
-        print('testDeepCopy, list3:', list3)
-
+        self.assertEqual(self._list2.size(), 1)        # Adding didn't change self._list2
+        #print('\ntestDeepCopy, self._list2:', self._list2)
+        #print('testDeepCopy, list3:', list3)
     
         
 if __name__ == '__main__':
