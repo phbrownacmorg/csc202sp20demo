@@ -96,12 +96,16 @@ class LList(object):
         return self
 
     def deepCopy(self) -> 'LList':
-        """Returns a deep(er) copy of the list, copying data."""
+        """Returns a deep(er) copy of the list, copying data.  Assumes all the
+        data objects are immutable. (Unhappily, that's not easy to test.)"""
         newList:LList = LList() # if self is empty, this is the right value
         if not self.isEmpty():
             # Cast is safe because we already know self._next != None
             newList = cast(LList, self._next).deepCopy()
             newList.add(self._data)
+
+        # Post:
+        assert newList._invariant() and newList._data == self._data
         return newList
 
 
