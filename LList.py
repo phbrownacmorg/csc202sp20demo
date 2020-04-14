@@ -85,6 +85,19 @@ class LList(object):
             # 27f6, 27f9
             return "\u276c{}\u276d\u279e".format(self._data) + str(cast(LList, self._next))
         
+    def shallowCopy(self) -> 'LList':
+        """Returns a shallow copy of the list, only copying pointers."""
+        return self
+
+    def deepCopy(self) -> 'LList':
+        """Returns a deep(er) copy of the list, copying data."""
+        newList:LList = LList() # if self is empty, this is the right value
+        if not self.isEmpty():
+            newList = self._next.deepCopy()
+            newList.add(self._data)
+        return newList
+
+
     # Mutator methods
     
     def add(self, value:Any) -> None:

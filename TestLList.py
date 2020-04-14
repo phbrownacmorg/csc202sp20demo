@@ -45,8 +45,8 @@ class TestNothing(unittest.TestCase):
         self.assertFalse(self._list1.isEmpty())
 
     def testStr(self) -> None:
-        print(self._list1)
-        print(self._list2)
+        print('\ntestStr, self._list1:', self._list1)
+        print('testStr, self._list2:', self._list2)
         self.assertEqual(str(self._list1), "\u276cfoo\u276d\u279e\u2205")
         self.assertEqual(str(self._list2),
                          "\u276cbar\u276d\u279e\u276cfoo\u276d\u279e\u2205")
@@ -104,5 +104,47 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.pop(), 'baz')
         self.assertEqual(self._list2.size(), 0)
 
+    def testShallowCopy(self) -> None:
+        list3 = self._list2.shallowCopy()
+        self.assertEqual(list3.size(), self._list2.size())
+        self.assertEqual(list3._data, 'bar')
+        self.assertTrue(list3 is self._list2) # Aliasing galore!
+
+        # Change to self._list2 also changes list3
+        self.assertEqual(self._list2.pop(), 'foo') # Pop 'foo' off the end of self._list2
+        self.assertEqual(self._list2.size(), 1)
+        self.assertEqual(list3.size(), 1)
+        print('\ntestShallowCopy, self._list2:', self._list2)
+        print('testShallowCopy, list3:', list3) # list3 got shorter as well!
+        
+        # Change to list3 affects self._list2 as well
+        list3.add('baz') # Add 'baz' to the head of list3
+        self.assertEqual(list3.size(), 2)
+        self.assertEqual(self._list2.size(), 2)
+        print('\ntestShallowCopy, self._list2:', self._list2) # self._list2 got longer as well!
+        print('testShallowCopy, list3:', list3)
+
+
+    def testDeepCopy(self) -> None:
+        list3 = self._list2.deepCopy()
+        self.assertEqual(str(list3), str(self._list2))
+        self.assertFalse(list3 is self._list2) # No aliasing
+
+        # Change to self._list2 stays on self._list2.  list3 is unaffected.
+        self.assertEqual(self._list2.pop(), 'foo') # Pop 'foo' off the end of self._list2
+        self.assertEqual(self._list2.size(), 1)
+        self.assertEqual(list3.size(), 2)
+        print('\ntestDeepCopy, self._list2:', self._list2)
+        print('testDeepCopy, list3:', list3) # list3 is unaffected
+       
+        # Change to list3 stays on list3.  self._list2 is unaffected.
+        list3.add('baz') # Add 'baz' to the head of list3
+        self.assertEqual(list3.size(), 3)
+        self.assertEqual(self._list2.size(), 1)
+        print('\ntestDeepCopy, self._list2:', self._list2) # self._list2 is unaffected.
+        print('testDeepCopy, list3:', list3)
+
+    
+        
 if __name__ == '__main__':
     unittest.main()
