@@ -81,6 +81,8 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.size(), 2)
         self._list2.add('baz')                       # ❬bar❭➞❬foo❭➞∅ -> ❬baz❭➞❬bar❭➞❬foo❭➞∅
         self.assertEqual(self._list2.size(), 3)
+        self.assertTrue(self._list2.search('baz'))
+        self.assertEqual(str(self._list2), '❬baz❭➞❬bar❭➞❬foo❭➞∅')
         self.assertTrue(self._list2._invariant())
         
     def testPop1L1(self) -> None:
@@ -113,6 +115,12 @@ class TestNothing(unittest.TestCase):
         self.assertEqual(self._list2.size(), 1)
         self.assertEqual(self._list2.pop(), 'baz')   # ❬baz❭➞∅ -> ∅
         self.assertEqual(self._list2.size(), 0)
+
+    def testPopPrecondition(self) -> None:
+        with self.assertRaises(AssertionError):
+            self._list4.pop(-5)
+        with self.assertRaises(AssertionError):
+            self._list4.pop(4)
 
     def testShallowCopy(self) -> None:
         list3 = self._list2.shallowCopy()
